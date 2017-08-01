@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.regex.Pattern;
 
 public class ChunkTrans {
 	public final static boolean DEBUG = false;
@@ -51,7 +52,7 @@ public class ChunkTrans {
 		for (int i = 0; i < length; i++) {
 			if (Character.isSpaceChar((char)bytes[i]) || 
 				(!Character.isDigit(bytes[i]) && 
-				!Character.isLetter((char)bytes[i]))) {
+				!Character.isLetter((char)bytes[i]) && !isPunctuation((char)bytes[i]))) {
 				ostring.append("\\x").append(String.format("%02X", (bytes[i] & 0xff)));
 			} else {
 				ostring.append((char)bytes[i]);
@@ -76,7 +77,7 @@ public class ChunkTrans {
 		for (int i = 0; i < length; i++) {
 			if (Character.isSpaceChar((char)bytes[i]) || 
 				(!Character.isDigit(bytes[i]) && 
-				!Character.isLetter((char)bytes[i]))) {
+				!Character.isLetter((char)bytes[i]) && !isPunctuation((char)bytes[i]))) {
 				ostring.append("\\x").append(String.format("%02X", (bytes[i] & 0xff)));
 			} else if (bytes[i] == '"') {
 				ostring.append("\\\"");
@@ -250,7 +251,7 @@ public class ChunkTrans {
 			for (int i = 0; i < length2; i++) {
 				if (Character.isSpaceChar((char)bytes2[i]) || 
 					(!Character.isDigit(bytes2[i]) && 
-					!Character.isLetter((char)bytes2[i]))) {
+					!Character.isLetter((char)bytes2[i]) && !isPunctuation((char)bytes2[i]))) {
 					ostring.append("\\x").append(String.format("%02X", (bytes2[i] & 0xff)));
 				} else if (bytes2[i] == '"') {
 					ostring.append("\\\"");
@@ -320,7 +321,7 @@ public class ChunkTrans {
 			for (int i = 0; i < length2; i++) {
 				if (Character.isSpaceChar((char)bytes2[i]) || 
 					(!Character.isDigit(bytes2[i]) && 
-					!Character.isLetter((char)bytes2[i]))) {
+					!Character.isLetter((char)bytes2[i]) && !isPunctuation((char)bytes2[i]))) {
 					ostring.append("\\x").append(String.format("%02X", (bytes2[i] & 0xff)));
 				} else if (bytes2[i] == '"') {
 					ostring.append("\\\"");
@@ -415,7 +416,7 @@ public class ChunkTrans {
 					
 					tab(ostring, level + 1);
 					ostring.append("{").append("\"").append("type").append("\"").append(":").append(Integer.toString((int)type[0])).append(", ")
-						.append("\"").append("value").append("\"").append(":").append(Double.toString(length_)).append(",}") 
+						.append("\"").append("value").append("\"").append(":").append((length_ % 1) == 0 ? Integer.toString((int)length_) : Double.toString(length_)).append(",}") 
 						.append(",").append("\n");
 				}
 				break;
@@ -438,7 +439,7 @@ public class ChunkTrans {
 					for (int i_ = 0; i_ < length_; i_++) {
 						if (Character.isSpaceChar((char)bytes_[i_]) || 
 							(!Character.isDigit(bytes_[i_]) && 
-							!Character.isLetter((char)bytes_[i_]))) {
+							!Character.isLetter((char)bytes_[i_]) && !isPunctuation((char)bytes_[i_]))) {
 							ostring.append("\\x").append(String.format("%02X", (bytes_[i_] & 0xff)));
 						} else if (bytes_[i_] == '"') {
 							ostring.append("\\\"");
@@ -558,4 +559,8 @@ public class ChunkTrans {
         }  
         return Double.longBitsToDouble(value);  
     } 
+	
+	public boolean isPunctuation(Character ch) {
+		return Pattern.compile("\\p{Punct}").matcher(String.valueOf(ch)).matches();
+	}
 }
