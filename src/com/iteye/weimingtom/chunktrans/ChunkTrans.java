@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +12,20 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 public class ChunkTrans {
+	public final static boolean DEBUG = false;
+	public int position = 0;
+	
+	private void readbuf(BufferedInputStream fin, byte[] bytes, int len) throws IOException {
+		fin.read(bytes, 0, len);
+		this.position += len;
+//		if (this.position == 420) {
+//			System.out.println(">>position=" + position + "<<");
+//		}
+		if (DEBUG) {
+			System.out.println(">>position=" + position + "<<");
+		}
+	}
+	
 	private void tab(StringBuffer ostring, int n) {
 		for (int i = 0; i < n; i++) {
 			ostring.append("\t");
@@ -22,7 +35,7 @@ public class ChunkTrans {
 	private void readbyte(StringBuffer ostring, 
 		BufferedInputStream fin, String name, int level) throws IOException {
 		byte[] bytes = new byte[1];
-		fin.read(bytes, 0, 1);
+		readbuf(fin, bytes, 1);
 		tab(ostring, level);
 		ostring.append("\"").append(name).append("\"").append(":")
 			.append(Integer.toString(bytes[0] & 0xff))
@@ -32,7 +45,7 @@ public class ChunkTrans {
 	private void readmultibytes(StringBuffer ostring, 
 		BufferedInputStream fin, String name, int length, int level) throws IOException {
 		byte[] bytes = new byte[length];
-		fin.read(bytes, 0, length);
+		readbuf(fin, bytes, length);
 		tab(ostring, level);
 		ostring.append("\"").append(name).append("\"").append(":").append("\"");
 		for (int i = 0; i < length; i++) {
@@ -50,14 +63,14 @@ public class ChunkTrans {
 	private void readstring(StringBuffer ostring, 
 		BufferedInputStream fin, String name, int level) throws IOException {
 		byte[] bytes = new byte[4]; 
-		fin.read(bytes, 0, 4);
+		readbuf(fin, bytes, 4);
 		int length = 0;
 		length |= (bytes[0] & 0xff);
 		length |= (bytes[1] & 0xff) << 8;
 		length |= (bytes[2] & 0xff) << 16;
 		length |= (bytes[3] & 0xff) << 24;
 		bytes = new byte[length];
-		fin.read(bytes, 0, length);
+		readbuf(fin, bytes, length);
 		tab(ostring, level);
 		ostring.append("\"").append(name).append("\"").append(":").append("\"");
 		for (int i = 0; i < length; i++) {
@@ -77,7 +90,7 @@ public class ChunkTrans {
 	private void readint32(StringBuffer ostring, 
 		BufferedInputStream fin, String name, int level) throws IOException {
 		byte[] bytes = new byte[4]; 
-		fin.read(bytes, 0, 4);
+		readbuf(fin, bytes, 4);
 		int length = 0;
 		length |= (bytes[0] & 0xff);
 		length |= (bytes[1] & 0xff) << 8;
@@ -94,7 +107,7 @@ public class ChunkTrans {
 	private void readnumber(StringBuffer ostring, 
 		BufferedInputStream fin, String name, int level) throws IOException {
 		byte[] bytes = new byte[8];
-		fin.read(bytes, 0, 8);
+		readbuf(fin, bytes, 8);
 		double length = 0;
 		long value = 0;
 		value |= ((long) (bytes[0] & 0xff)) << (8 * 0); 
@@ -115,14 +128,14 @@ public class ChunkTrans {
 	private void readcode(StringBuffer ostring, 
 		BufferedInputStream fin, String name, int level) throws IOException {
 		byte[] bytes = new byte[4]; 
-		fin.read(bytes, 0, 4);
+		readbuf(fin, bytes, 4);
 		int length = 0;
 		length |= (bytes[0] & 0xff);
 		length |= (bytes[1] & 0xff) << 8;
 		length |= (bytes[2] & 0xff) << 16;
 		length |= (bytes[3] & 0xff) << 24;
 		bytes = new byte[length * 4];
-		fin.read(bytes, 0, 4 * length);
+		readbuf(fin, bytes, 4 * length);
 		
 		tab(ostring, level);
 		ostring.append("\"").append(name).append("\"").append(":").append("\n");
@@ -161,7 +174,7 @@ public class ChunkTrans {
 	private void readdebug(StringBuffer ostring, 
 		BufferedInputStream fin, int level) throws IOException {
 		byte[] bytes = new byte[4]; 
-		fin.read(bytes, 0, 4);
+		readbuf(fin, bytes,  4);
 		int length = 0;
 		length |= (bytes[0] & 0xff);
 		length |= (bytes[1] & 0xff) << 8;
@@ -174,7 +187,7 @@ public class ChunkTrans {
 			.append(",").append("\n");
 
 		bytes = new byte[4 * length];
-		fin.read(bytes, 0, 4 * length);
+		readbuf(fin, bytes, 4 * length);
 
 		tab(ostring, level);
 		ostring.append("\"").append("lineinfo").append("\"").append(":").append("\n");
@@ -201,7 +214,7 @@ public class ChunkTrans {
 
 		//sizelocvars
 		bytes = new byte[4]; 
-		fin.read(bytes, 0, 4);
+		readbuf(fin, bytes, 4);
 		length = 0;
 		length |= (bytes[0] & 0xff);
 		length |= (bytes[1] & 0xff) << 8;
@@ -222,19 +235,19 @@ public class ChunkTrans {
 		for (int j = 0; j < length; j++) {
 			//readstring(fin, "varname");
 			byte[] bytes2 = new byte[4]; 
-			fin.read(bytes2, 0, 4);
+			readbuf(fin, bytes2, 4);
 			int length2 = 0;
-			length2 |= (bytes[0] & 0xff);
-			length2 |= (bytes[1] & 0xff) << 8;
-			length2 |= (bytes[2] & 0xff) << 16;
-			length2 |= (bytes[3] & 0xff) << 24;
+			length2 |= (bytes2[0] & 0xff);
+			length2 |= (bytes2[1] & 0xff) << 8;
+			length2 |= (bytes2[2] & 0xff) << 16;
+			length2 |= (bytes2[3] & 0xff) << 24;
 			bytes2 = new byte[length2];
-			fin.read(bytes2, 0, length2);
+			readbuf(fin, bytes2, length2);
 
 			tab(ostring, level + 1);
 			ostring.append("{"); 
 			ostring.append("\"").append("varname").append("\"").append(":").append("\"");
-			for (int i = 0; i < length; i++) {
+			for (int i = 0; i < length2; i++) {
 				if (Character.isSpaceChar((char)bytes2[i]) || 
 					(!Character.isDigit(bytes2[i]) && 
 					!Character.isLetter((char)bytes2[i]))) {
@@ -247,20 +260,20 @@ public class ChunkTrans {
 			}
 			ostring.append("\"").append(", ");
 			bytes2 = new byte[4]; 
-			fin.read(bytes2, 0, 4);
+			readbuf(fin, bytes2, 4);
 			length2 = 0;
-			length2 |= (bytes[0] & 0xff);
-			length2 |= (bytes[1] & 0xff) << 8;
-			length2 |= (bytes[2] & 0xff) << 16;
-			length2 |= (bytes[3] & 0xff) << 24;
+			length2 |= (bytes2[0] & 0xff);
+			length2 |= (bytes2[1] & 0xff) << 8;
+			length2 |= (bytes2[2] & 0xff) << 16;
+			length2 |= (bytes2[3] & 0xff) << 24;
 			ostring.append("\"").append("startpc").append("\"").append(":").append(Integer.toString(length2)).append(", "); 
 			bytes2 = new byte[4]; 
-			fin.read(bytes2, 0, 4);
+			readbuf(fin, bytes2, 4);
 			length2 = 0;
-			length2 |= (bytes[0] & 0xff);
-			length2 |= (bytes[1] & 0xff) << 8;
-			length2 |= (bytes[2] & 0xff) << 16;
-			length2 |= (bytes[3] & 0xff) << 24;
+			length2 |= (bytes2[0] & 0xff);
+			length2 |= (bytes2[1] & 0xff) << 8;
+			length2 |= (bytes2[2] & 0xff) << 16;
+			length2 |= (bytes2[3] & 0xff) << 24;
 			ostring.append("\"").append("endpc").append("\"").append(":").append(Integer.toString(length2)).append(", "); 
 			ostring.append("},").append("\n");
 			//readint32(fin, "startpc");
@@ -272,7 +285,7 @@ public class ChunkTrans {
 		
 		//upvalues
 		bytes = new byte[4]; 
-		fin.read(bytes, 0, 4);
+		readbuf(fin, bytes, 4);
 		length = 0;
 		length |= (bytes[0] & 0xff);
 		length |= (bytes[1] & 0xff) << 8;
@@ -292,19 +305,19 @@ public class ChunkTrans {
 		
 		for (int k = 0; k < length; k++) {
 			byte[] bytes2 = new byte[4]; 
-			fin.read(bytes2, 0, 4);
+			readbuf(fin, bytes2, 4);
 			int length2 = 0;
-			length2 |= (bytes[0] & 0xff);
-			length2 |= (bytes[1] & 0xff) << 8;
-			length2 |= (bytes[2] & 0xff) << 16;
-			length2 |= (bytes[3] & 0xff) << 24;
+			length2 |= (bytes2[0] & 0xff);
+			length2 |= (bytes2[1] & 0xff) << 8;
+			length2 |= (bytes2[2] & 0xff) << 16;
+			length2 |= (bytes2[3] & 0xff) << 24;
 			bytes2 = new byte[length2];
-			fin.read(bytes2, 0, length2);
+			readbuf(fin, bytes2, length2);
 			
 			tab(ostring, level + 1);
 			ostring.append("\"");
 			
-			for (int i = 0; i < length; i++) {
+			for (int i = 0; i < length2; i++) {
 				if (Character.isSpaceChar((char)bytes2[i]) || 
 					(!Character.isDigit(bytes2[i]) && 
 					!Character.isLetter((char)bytes2[i]))) {
@@ -340,7 +353,7 @@ public class ChunkTrans {
 	private void readconstant(StringBuffer ostring, 
 		BufferedInputStream fin, int level) throws IOException {
 		byte[] bytes = new byte[4]; 
-		fin.read(bytes, 0, 4);
+		readbuf(fin, bytes, 4);
 		int length = 0;
 		length |= (bytes[0] & 0xff);
 		length |= (bytes[1] & 0xff) << 8;
@@ -360,7 +373,7 @@ public class ChunkTrans {
 
 		for (int i = 0; i < length; i++) {
 			byte[] type = new byte[1];
-			fin.read(type, 0, 1);
+			readbuf(fin, type, 1);
 			//ostring << "type=>" << (int)type << endl;
 			switch (type[0]) {
 			case 0: //LUA_TNIL:
@@ -375,7 +388,7 @@ public class ChunkTrans {
 			case 1: //LUA_TBOOLEAN:
 				{
 					byte[] byte_ = new byte[1];
-					fin.read(byte_, 0, 1);
+					readbuf(fin, byte_, 1);
 					
 					tab(ostring, level + 1);
 					ostring.append("{").append("\"").append("type").append("\"").append(":").append(Integer.toString((int)type[0])).append(", ")
@@ -387,7 +400,7 @@ public class ChunkTrans {
 			case 3: //LUA_TNUMBER:
 				{
 					byte[] bytes_ = new byte[8];
-					fin.read(bytes_, 0, 8);
+					readbuf(fin, bytes_, 8);
 					double length_ = 0;
 					long value_ = 0;
 					value_ |= ((long) (bytes_[0] & 0xff)) << (8 * 0); 
@@ -410,14 +423,14 @@ public class ChunkTrans {
 			case 4: //LUA_TSTRING:
 				{
 					byte[] bytes_ = new byte[4]; 
-					fin.read(bytes_, 0, 4);
+					readbuf(fin, bytes_, 4);
 					int length_ = 0;
 					length_ |= (bytes_[0] & 0xff);
 					length_ |= (bytes_[1] & 0xff) << 8;
 					length_ |= (bytes_[2] & 0xff) << 16;
 					length_ |= (bytes_[3] & 0xff) << 24;
 					bytes_ = new byte[length_];
-					fin.read(bytes_, 0, length_);
+					readbuf(fin, bytes_, length_);
 					
 					tab(ostring, level + 1);
 					ostring.append("{").append("\"").append("type").append("\"").append(":").append(Integer.toString((int)type[0])).append(", ");
@@ -447,7 +460,7 @@ public class ChunkTrans {
 		ostring.append("],").append("\n");
 
 		bytes = new byte[4]; 
-		fin.read(bytes, 0, 4);
+		readbuf(fin, bytes, 4);
 		length = 0;
 		length |= (bytes[0] & 0xff);
 		length |= (bytes[1] & 0xff) << 8;
@@ -497,7 +510,7 @@ public class ChunkTrans {
 	}
 
 	public ChunkTrans() {
-		
+		this.position = 0;
 	}
 	
 	public int run() throws IOException {
