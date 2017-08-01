@@ -1,0 +1,50 @@
+Pos   Hex Data           Description or Code
+------------------------------------------------------------------------
+0000                     ** source chunk: return.luac
+                         ** global header start **
+0000  1B4C7561           header signature: "\27Lua"
+0004  51                 version (major:minor hex digits)
+0005  00                 format (0=official)
+0006  01                 endianness (1=little endian)
+0007  04                 size of int (bytes)
+0008  04                 size of size_t (bytes)
+0009  04                 size of Instruction (bytes)
+000A  08                 size of number (bytes)
+000B  00                 integral (1=integral)
+                         * number type: double
+                         * x86 standard (32-bit, little endian, doubles)
+                         ** global header end **
+                         
+000C                     ** function [0] definition (level 1)
+                         ** start of function **
+000C  0C000000           string size (12)
+0010  4072657475726E2E+  "@return."
+0018  6C756100           "lua\0"
+                         source name: @return.lua
+001C  00000000           line defined (0)
+0020  00000000           last line defined (0)
+0024  00                 nups (0)
+0025  00                 numparams (0)
+0026  02                 is_vararg (2)
+0027  02                 maxstacksize (2)
+                         * code:
+0028  02000000           sizecode (2)
+; (1)  return nil
+002C  1E000001           [1] return     0   2      
+0030  1E008000           [2] return     0   1      
+                         * constants:
+0034  00000000           sizek (0)
+                         * functions:
+0038  00000000           sizep (0)
+                         * lines:
+003C  02000000           sizelineinfo (2)
+                         [pc] (line)
+0040  01000000           [1] (1)
+0044  01000000           [2] (1)
+                         * locals:
+0048  00000000           sizelocvars (0)
+                         * upvalues:
+004C  00000000           sizeupvalues (0)
+                         ** end of function **
+
+0050                     ** end of chunk **

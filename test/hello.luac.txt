@@ -1,0 +1,85 @@
+Pos   Hex Data           Description or Code
+------------------------------------------------------------------------
+0000                     ** source chunk: hello.luac
+                         ** global header start **
+0000  1B4C7561           header signature: "\27Lua"
+0004  51                 version (major:minor hex digits)
+0005  00                 format (0=official)
+0006  01                 endianness (1=little endian)
+0007  04                 size of int (bytes)
+0008  04                 size of size_t (bytes)
+0009  04                 size of Instruction (bytes)
+000A  08                 size of number (bytes)
+000B  00                 integral (1=integral)
+                         * number type: double
+                         * x86 standard (32-bit, little endian, doubles)
+                         ** global header end **
+                         
+000C                     ** function [0] definition (level 1)
+                         ** start of function **
+000C  0B000000           string size (11)
+0010  4068656C6C6F2E6C+  "@hello.l"
+0018  756100             "ua\0"
+                         source name: @hello.lua
+001B  00000000           line defined (0)
+001F  00000000           last line defined (0)
+0023  00                 nups (0)
+0024  00                 numparams (0)
+0025  02                 is_vararg (2)
+0026  04                 maxstacksize (4)
+                         * code:
+0027  07000000           sizecode (7)
+; (1)  -- the first program in every language
+; (2)  
+; (3)  io.write("Hello world, from ",_VERSION,"!\n")
+002B  05000000           [1] getglobal  0   0        ; io
+002F  06404000           [2] gettable   0   0   257  ; "write"
+0033  41800000           [3] loadk      1   2        ; "Hello world, from "
+0037  85C00000           [4] getglobal  2   3        ; _VERSION
+003B  C1000100           [5] loadk      3   4        ; "!\n"
+003F  1C400002           [6] call       0   4   1  
+0043  1E008000           [7] return     0   1      
+                         * constants:
+0047  05000000           sizek (5)
+004B  04                 const type 4
+004C  03000000           string size (3)
+0050  696F00             "io\0"
+                         const [0]: "io"
+0053  04                 const type 4
+0054  06000000           string size (6)
+0058  777269746500       "write\0"
+                         const [1]: "write"
+005E  04                 const type 4
+005F  13000000           string size (19)
+0063  48656C6C6F20776F+  "Hello wo"
+006B  726C642C2066726F+  "rld, fro"
+0073  6D2000             "m \0"
+                         const [2]: "Hello world, from "
+0076  04                 const type 4
+0077  09000000           string size (9)
+007B  5F56455253494F4E+  "_VERSION"
+0083  00                 "\0"
+                         const [3]: "_VERSION"
+0084  04                 const type 4
+0085  03000000           string size (3)
+0089  210A00             "!\n\0"
+                         const [4]: "!\n"
+                         * functions:
+008C  00000000           sizep (0)
+                         * lines:
+0090  07000000           sizelineinfo (7)
+                         [pc] (line)
+0094  03000000           [1] (3)
+0098  03000000           [2] (3)
+009C  03000000           [3] (3)
+00A0  03000000           [4] (3)
+00A4  03000000           [5] (3)
+00A8  03000000           [6] (3)
+00AC  03000000           [7] (3)
+                         * locals:
+00B0  00000000           sizelocvars (0)
+                         * upvalues:
+00B4  00000000           sizeupvalues (0)
+                         ** end of function **
+
+00B8                     ** end of chunk **

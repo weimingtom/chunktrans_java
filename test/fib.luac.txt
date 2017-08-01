@@ -1,0 +1,150 @@
+Pos   Hex Data           Description or Code
+------------------------------------------------------------------------
+0000                     ** source chunk: fib.luac
+                         ** global header start **
+0000  1B4C7561           header signature: "\27Lua"
+0004  51                 version (major:minor hex digits)
+0005  00                 format (0=official)
+0006  01                 endianness (1=little endian)
+0007  04                 size of int (bytes)
+0008  04                 size of size_t (bytes)
+0009  04                 size of Instruction (bytes)
+000A  08                 size of number (bytes)
+000B  00                 integral (1=integral)
+                         * number type: double
+                         * x86 standard (32-bit, little endian, doubles)
+                         ** global header end **
+                         
+000C                     ** function [0] definition (level 1)
+                         ** start of function **
+000C  09000000           string size (9)
+0010  406669622E6C7561+  "@fib.lua"
+0018  00                 "\0"
+                         source name: @fib.lua
+0019  00000000           line defined (0)
+001D  00000000           last line defined (0)
+0021  00                 nups (0)
+0022  00                 numparams (0)
+0023  02                 is_vararg (2)
+0024  03                 maxstacksize (3)
+                         * code:
+0025  08000000           sizecode (8)
+; (1)  function fib(n)
+; (2)  	if n<2 then
+; (3)  		return n
+; (4)  	else
+; (5)  		return fib(n-1)+fib(n-2)
+; (6)  	end
+; (7)  end
+0029  24000000           [1] closure    0   0        ; 0 upvalues
+; (1)  function fib(n)
+002D  07000000           [2] setglobal  0   0        ; fib
+; (8)  
+; (9)  print(fib(10))
+0031  05400000           [3] getglobal  0   1        ; print
+0035  45000000           [4] getglobal  1   0        ; fib
+0039  81800000           [5] loadk      2   2        ; 10
+003D  5C000001           [6] call       1   2   0  
+0041  1C400000           [7] call       0   0   1  
+0045  1E008000           [8] return     0   1      
+                         * constants:
+0049  03000000           sizek (3)
+004D  04                 const type 4
+004E  04000000           string size (4)
+0052  66696200           "fib\0"
+                         const [0]: "fib"
+0056  04                 const type 4
+0057  06000000           string size (6)
+005B  7072696E7400       "print\0"
+                         const [1]: "print"
+0061  03                 const type 3
+0062  0000000000002440   const [2]: (10)
+                         * functions:
+006A  01000000           sizep (1)
+                         
+006E                     ** function [0] definition (level 2)
+                         ** start of function **
+006E  00000000           string size (0)
+                         source name: (none)
+0072  01000000           line defined (1)
+0076  07000000           last line defined (7)
+007A  00                 nups (0)
+007B  01                 numparams (1)
+007C  00                 is_vararg (0)
+007D  04                 maxstacksize (4)
+                         * code:
+007E  0D000000           sizecode (13)
+; (2)  	if n<2 then
+0082  18004000           [01] lt         0   0   256  ; 2, to [3] if true
+0086  16400080           [02] jmp        2            ; to [5]
+; (3)  		return n
+008A  1E000001           [03] return     0   2      
+008E  16C00180           [04] jmp        8            ; to [13]
+; (5)  		return fib(n-1)+fib(n-2)
+0092  45400000           [05] getglobal  1   1        ; fib
+0096  8D804000           [06] sub        2   0   258  ; 1
+009A  5C800001           [07] call       1   2   2  
+009E  85400000           [08] getglobal  2   1        ; fib
+00A2  CD004000           [09] sub        3   0   256  ; 2
+00A6  9C800001           [10] call       2   2   2  
+00AA  4C808000           [11] add        1   1   2  
+00AE  5E000001           [12] return     1   2      
+; (7)  end
+00B2  1E008000           [13] return     0   1      
+                         * constants:
+00B6  03000000           sizek (3)
+00BA  03                 const type 3
+00BB  0000000000000040   const [0]: (2)
+00C3  04                 const type 4
+00C4  04000000           string size (4)
+00C8  66696200           "fib\0"
+                         const [1]: "fib"
+00CC  03                 const type 3
+00CD  000000000000F03F   const [2]: (1)
+                         * functions:
+00D5  00000000           sizep (0)
+                         * lines:
+00D9  0D000000           sizelineinfo (13)
+                         [pc] (line)
+00DD  02000000           [01] (2)
+00E1  02000000           [02] (2)
+00E5  03000000           [03] (3)
+00E9  03000000           [04] (3)
+00ED  05000000           [05] (5)
+00F1  05000000           [06] (5)
+00F5  05000000           [07] (5)
+00F9  05000000           [08] (5)
+00FD  05000000           [09] (5)
+0101  05000000           [10] (5)
+0105  05000000           [11] (5)
+0109  05000000           [12] (5)
+010D  07000000           [13] (7)
+                         * locals:
+0111  01000000           sizelocvars (1)
+0115  02000000           string size (2)
+0119  6E00               "n\0"
+                         local [0]: n
+011B  00000000             startpc (0)
+011F  0C000000             endpc   (12)
+                         * upvalues:
+0123  00000000           sizeupvalues (0)
+                         ** end of function **
+
+                         * lines:
+0127  08000000           sizelineinfo (8)
+                         [pc] (line)
+012B  07000000           [1] (7)
+012F  01000000           [2] (1)
+0133  09000000           [3] (9)
+0137  09000000           [4] (9)
+013B  09000000           [5] (9)
+013F  09000000           [6] (9)
+0143  09000000           [7] (9)
+0147  09000000           [8] (9)
+                         * locals:
+014B  00000000           sizelocvars (0)
+                         * upvalues:
+014F  00000000           sizeupvalues (0)
+                         ** end of function **
+
+0153                     ** end of chunk **
