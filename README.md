@@ -10,3 +10,5 @@ Java port of chunktrans
 
 ## OP Command  
 * https://github.com/haramako/mlua/blob/master/state.rb  
+* https://github.com/andyleap/LuaVM/blob/master/VM.go  
+* https://github.com/andyleap/LuaVM/blob/master/Instructions.go  
